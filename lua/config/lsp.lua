@@ -1,0 +1,107 @@
+local map = vim.api.nvim_set_keymap
+options = { noremap = true, silent = true }
+
+local luadev = require('lua-dev').setup {}
+-- Add aditional capabilities supported by nvim-cmp
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
+local lspsaga = require 'lspsaga'
+lspsaga.setup {}
+
+-- Uses on_attach to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr,...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr,...) end
+  -- Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  local opts = { noremap = true, silent = true }
+  -- Lsp mappings
+  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+  
+  if client.resolved_capabilities.document_formatting then
+    -- Format on save
+    vim.api.nvim_command [[augroup Format]]
+    vim.api.nvim_command [[autocmd! * <buffer>]]
+    vim.api.nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
+    vim.api.nvim_command [[augroup END]]
+  end
+
+end
+
+local servers = { 'pyright', 'tsserver', 'sumneko_lua' }
+-- In order for nvim-lsp-installer to register the necessary hooks at the
+-- right moment, make sure to call it before lspconfig setup
+require('nvim-lsp-installer').setup {
+  automatic_installation = true
+}
+
+local lspconfig = require('lspconfig')
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+for _, lsp in pairs(servers) do
+  lspconfig[lsp].setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    flags = {
+      -- This will be the default in neovim 0.7+
+      debounce_text_changes = 150,
+    }
+  }
+end
+
+-- Lsp saga mappings
+map('n', '<C-j>', '<Cmd>Lspsaga diagnostic_jump_next<cr>', options)
+map('n', 'K', '<Cmd>Lspsaga hover_doc<cr>', options)
+map('i', '<C-k>', '<Cmd>Lspsaga signature_help<cr>', options)
+map('n', 'gh', '<Cmd>Lspsaga lsp_finder<cr>', options)
+
+lspconfig.sumneko_lua.setup(luadev)
+
+-- Luasnip setup
+local luasnip = require('luasnip')
+
+-- nvim-cmp setup
+local cmp = require 'cmp'
+cmp.setup {
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+    ['<Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+    ['<S-Tab>'] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { 'i', 's' }),
+  }),
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+    { name = 'path' },
+    { name = 'buffer' },
+  },
+}
