@@ -1,5 +1,10 @@
 vim.cmd [[packadd packer.nvim]]
 
+vim.cmd [[augroup Packer_user_config]]
+vim.cmd [[autocmd!]]
+vim.cmd [[autocmd BufWritePost plugins.lua source <afile> | PackerCompile ]]
+vim.cmd [[augroup END]]
+
 return require('packer').startup(function()
 	-- Packer plugin manager
 	use 'wbthomason/packer.nvim'
