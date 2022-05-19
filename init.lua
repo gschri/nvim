@@ -1,8 +1,5 @@
 require('config.main')
 
--- clear previous autocmds
-vim.cmd [[ autocmd! ]]
-
 local set = vim.opt
 -- Show line numbers
 set.number = true
