@@ -37,6 +37,8 @@ return require('packer').startup(function()
   use 'L3MON4D3/LuaSnip'
   -- Syntax highlighting
   use 'nvim-treesitter/nvim-treesitter'
+  -- autoclose and autorename html tag (requires treesitter)
+  use 'windwp/nvim-ts-autotag' 
   -- Autopairs for nvim
   use 'windwp/nvim-autopairs'
 	-- Fuzzy finder
