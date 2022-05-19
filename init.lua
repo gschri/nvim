@@ -1,8 +1,11 @@
-require('config.main')
+-- clear previous autocommands
+vim.cmd [[autocmd! ]]
 
 local set = vim.opt
 -- Show line numbers
 set.number = true
+-- true color 
+vim.cmd [[ set termguicolors]]
 -- Case-insensitive searching
 set.ignorecase = true
 -- Faster completion
@@ -34,3 +37,5 @@ vim.cmd [[au BufNewFile,BufRead *.md set filetype=markdown]]
 vim.cmd [[au BufNewFile,BufRead *.mdx set filetype=markdown]]
 -- YAML
 vim.cmd [[autocmd FileType yaml setlocal shiftwidth=2 tabstop=2]]
+
+require('config.main')

@@ -1,5 +1,6 @@
 -- config/main.lua
 require('config.plugins')
+require('config.nvim-colorizer')
 require('config.treesitter')
 require('config.ts-autotag')
 require('config.keybindings')

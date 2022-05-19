@@ -43,6 +43,8 @@ return require('packer').startup(function()
   use 'windwp/nvim-ts-autotag' 
   -- Autopairs for nvim
   use 'windwp/nvim-autopairs'
+  -- Show rgb colors
+  use 'norcalli/nvim-colorizer.lua'
 	-- Fuzzy finder
 	use {
   		'nvim-telescope/telescope.nvim',
