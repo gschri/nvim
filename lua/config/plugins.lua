@@ -8,6 +8,8 @@ vim.cmd [[augroup END]]
 return require('packer').startup(function()
 	-- Packer plugin manager
 	use 'wbthomason/packer.nvim'
+  -- Emmet
+  use 'mattn/emmet-vim'
   -- Gitsigns
   use 'lewis6991/gitsigns.nvim'
 	-- Colorscheme
