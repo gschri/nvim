@@ -1,5 +1,7 @@
 -- config/main.lua
 require('config.plugins')
+require('config.treesitter')
+require('config.ts-autotag')
 require('config.keybindings')
 require('config.colorscheme')
 require('config.comments')
@@ -10,4 +12,3 @@ require('config.whichkey')
 require('config.lsp')
 require('config.fileexplorer')
 require('config.nvim-autopairs')
-require('config.treesitter')

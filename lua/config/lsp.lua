@@ -176,7 +176,6 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
       spacing = 4,
       prefix = ''
     },
-    update_in_insert = true,
   }
 )
 
