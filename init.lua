@@ -1,5 +1,8 @@
 require('config.main')
 
+-- clear previous autocmds
+vim.cmd [[ autocmd! ]]
+
 local set = vim.opt
 -- Show line numbers
 set.number = true
@@ -22,3 +25,15 @@ set.shiftwidth = 2
 set.expandtab = true
 -- Set number column width to 2 (default 4)
 set.numberwidth = 4
+
+-- Filetypes
+------------------------------------
+-- Javascript
+vim.cmd [[au BufNewFile,BufRead *.es6 setf javascript]]
+-- Typescript
+vim.cmd [[au BufNewFile,BufRead *.tsx setf typescriptreact]]
+-- Markdown
+vim.cmd [[au BufNewFile,BufRead *.md set filetype=markdown]]
+vim.cmd [[au BufNewFile,BufRead *.mdx set filetype=markdown]]
+-- YAML
+vim.cmd [[autocmd FileType yaml setlocal shiftwidth=2 tabstop=2]]
