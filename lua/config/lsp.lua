@@ -1,10 +1,50 @@
 local map = vim.api.nvim_set_keymap
 options = { noremap = true, silent = true }
+local nvim_lsp = require('lspconfig')
+local protocol = require('vim.lsp.protocol')
+
+-- Completion items tab customization
+local M = {}
+-- protocol.CompletionItemKind = {
+M.icons = {
+    '', -- Text
+    '', -- Method
+    '', -- Function
+    '', -- Constructor
+    '', -- Field
+    '', -- Variable
+    '', -- Class
+    'ﰮ', -- Interface
+    '', -- Module
+    '', -- Property
+    '', -- Unit
+    '', -- Value
+    '', -- Enum
+    '', -- Keyword
+    '﬌', -- Snippet
+    '', -- Color
+    '', -- File
+    '', -- Reference
+    '', -- Folder
+    '', -- EnumMember
+    '', -- Constant
+    '', -- Struct
+    '', -- Event
+    'ﬦ', -- Operator
+    '', -- TypeParameter
+}
+
+function M.setup() 
+  local kinds = protocol.CompletionItemKind
+  for i, kind in ipairs(kinds) do
+    kinds[i] = M.icons[kind] or kind
+  end
+end
+
+
 
 local luadev = require('lua-dev').setup {}
 -- Add aditional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 local lspsaga = require 'lspsaga'
 lspsaga.setup {}
@@ -20,6 +60,11 @@ local on_attach = function(client, bufnr)
   local opts = { noremap = true, silent = true }
   -- Lsp mappings
   buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
+
+  -- formatting
+  if client.name == 'tsserver' then 
+    client.resolved_capabilities.document_formatting = false
+  end
   
   if client.resolved_capabilities.document_formatting then
     -- Format on save
@@ -28,29 +73,111 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_command [[autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_seq_sync()]]
     vim.api.nvim_command [[augroup END]]
   end
+  
+  -- CompletionItemKind setup
+  M.setup()
 
 end
 
-local servers = { 'pyright', 'tsserver', 'sumneko_lua' }
+local servers = { 'pyright', 'sumneko_lua','cssls','emmet_ls','gopls','dartls','jsonls' }
 -- In order for nvim-lsp-installer to register the necessary hooks at the
 -- right moment, make sure to call it before lspconfig setup
 require('nvim-lsp-installer').setup {
   automatic_installation = true
 }
 
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- Enable (broadcasting) snippet capability for completion
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+local cmp_nvim_lsp = require('cmp_nvim_lsp')
+capabilities = cmp_nvim_lsp.update_capabilities(capabilities)
+
 local lspconfig = require('lspconfig')
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 for _, lsp in pairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
     capabilities = capabilities,
-    flags = {
-      -- This will be the default in neovim 0.7+
-      debounce_text_changes = 150,
-    }
   }
 end
+
+-- configure tsserver separately
+nvim_lsp.tsserver.setup {
+  on_attach = on_attach,
+  filetypes = {"typescript","typescriptreact","typescript.tsx"},
+  capabilities = capabilities
+}
+
+-- configure diagnosticls separately
+nvim_lsp.diagnosticls.setup {
+  on_attach = on_attach,
+  filetypes = {"javascript","javascriptreact","json","typescript","typescriptreact","css","less","scss","pandoc"},
+  init_options = {
+    linters = {
+      eslint = {
+        command = 'eslint_d',
+        rootPatterns = {'.git'},
+        debounce = 100,
+        args = {'--stdin', '--stdin-filename','%filename','--format','json'},
+        sourceName = 'eslint_d',
+        parseJson = {
+          errorsRoot = '[0].messages',
+          line = 'line',
+          column = 'column',
+          endLine = 'endLine',
+          endColumn = 'endColumn',
+          message = '[eslint] ${message} [${ruleId}]',
+          security = 'severity'
+        },
+        securities = {
+          [2] = 'error',
+          [1] = 'warning'
+        }
+      },
+    },
+    filetypes = {
+      javascript = 'eslint',
+      javascriptreact = 'eslint',
+      typescript = 'eslint',
+      typescriptreact = 'eslint'
+    },
+    formatters = {
+      eslint_d = {
+        command = 'eslint_d',
+        rootPatterns = {'.git'},
+        args = {'--stdin','--stdin-filename','%filename','--fix-to-stdout'},
+      },
+      prettier = {
+        command = 'prettier_d_slim',
+        rootPatterns = {'.git'},
+        args = {'--stdin','--stdin-filepath','%filename'}
+      }
+    },
+    formatFiletypes = {
+      css = 'prettier',
+      javascript = 'prettier',
+      javascriptreact = 'prettier',
+      json = 'prettier',
+      scss = 'prettier',
+      less = 'prettier',
+      typescript = 'prettier',
+      typescriptreact = 'prettier',
+    }
+  }
+}
+
+-- icon
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = true,
+    virtual_text = {
+      spacing = 4,
+      prefix = ''
+    }
+  }
+)
 
 -- Lsp saga mappings
 map('n', '<C-j>', '<Cmd>Lspsaga diagnostic_jump_next<cr>', options)
@@ -64,8 +191,21 @@ lspconfig.sumneko_lua.setup(luadev)
 local luasnip = require('luasnip')
 
 -- nvim-cmp setup
-local cmp = require 'cmp'
+local cmp = require('cmp')
+local lspkind = require('lspkind')
 cmp.setup {
+  formatting = {
+    format = lspkind.cmp_format({
+      mode = 'symbol', -- show only symbol annotations
+      maxwidth = 50, -- prevent the popup from showing more than provided characters
+
+      -- The function below will be called before any actual modifications from lspkind
+      -- so that you can provide more controls on popup customization.
+      before = function (entry, vim_item)
+        return vim_item
+      end
+    })
+  },
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)

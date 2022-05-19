@@ -21,6 +21,8 @@ return require('packer').startup(function()
 	}
 	-- Lightweight lsp plugin
 	use 'tami5/lspsaga.nvim'
+  -- Lspkind for autocompletion icons
+  use 'onsails/lspkind.nvim'
   -- Lsp source for filesystem paths
   use 'hrsh7th/cmp-path'
   -- Autocompletion
@@ -33,8 +35,8 @@ return require('packer').startup(function()
   use 'hrsh7th/cmp-buffer'
   -- Snippets plugin
   use 'L3MON4D3/LuaSnip'
-	-- Syntax highlighting
-	use 'nvim-treesitter/nvim-treesitter'
+  -- Syntax highlighting
+  use 'nvim-treesitter/nvim-treesitter'
   -- Autopairs for nvim
   use 'windwp/nvim-autopairs'
 	-- Fuzzy finder
@@ -42,6 +44,8 @@ return require('packer').startup(function()
   		'nvim-telescope/telescope.nvim',
   		requires = { {'nvim-lua/plenary.nvim'} }
 	}
+  -- Fzf for telescope [ requires cmake installed ]
+  use {'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
   -- Which Key
   use 'folke/which-key.nvim'
 	-- Statusline
@@ -64,5 +68,8 @@ return require('packer').startup(function()
 			require('Comment').setup()
 	    	end
 	}
-
+  -- commentstring plugin
+  -- configure Comment  (or any other comment plugin ) to work with complex filetypes
+  -- such as tsx and jsx by using context while commenting 
+  use 'JoosepAlviste/nvim-ts-context-commentstring'
 end)
