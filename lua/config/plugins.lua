@@ -52,6 +52,12 @@ return require('packer').startup(function()
 	}
   -- Fzf for telescope [ requires cmake installed ]
   use {'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+  -- Ui select for telescope
+  use {'nvim-telescope/telescope-ui-select.nvim' }
+  -- Rust tools for rust_analyzer lsp (requires ui-select above)
+  use {'simrat39/rust-tools.nvim'}
+  -- Debugging for rust-tools
+  use {'mfussenegger/nvim-dap'}
   -- Which Key
   use 'folke/which-key.nvim'
 	-- Statusline

@@ -11,6 +11,11 @@ map('n','<leader>fh','<cmd>Telescope help_tags<cr>',options)
 
 require('telescope').setup({
   extensions = {
+    ["ui-select"] = {
+      require('telescope.themes').get_dropdown {
+
+      }
+    },
     fzf = {
       fuzzy = true,
       override_generic_sorter = true,
@@ -21,3 +26,4 @@ require('telescope').setup({
 })
 
 require('telescope').load_extension('fzf')
+require('telescope').load_extension('ui-select')
