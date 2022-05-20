@@ -12,7 +12,7 @@ require'nvim-treesitter.configs'.setup {
     "json",
     "yaml",
     "html",
-    "",
+    "rust",
     "scss"
   },
   context_commentstring = {
