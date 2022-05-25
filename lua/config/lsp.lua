@@ -79,7 +79,7 @@ local on_attach = function(client, bufnr)
 
 end
 
-local servers = { 'pyright', 'sumneko_lua','cssls','emmet_ls','rust_analyzer','dartls','jsonls' }
+local servers = { 'pyright', 'sumneko_lua','cssls','emmet_ls','rust_analyzer','hls','jsonls' }
 -- In order for nvim-lsp-installer to register the necessary hooks at the
 -- right moment, make sure to call it before lspconfig setup
 require('nvim-lsp-installer').setup {

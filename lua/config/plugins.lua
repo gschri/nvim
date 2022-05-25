@@ -8,6 +8,10 @@ vim.cmd [[augroup END]]
 return require('packer').startup(function()
 	-- Packer plugin manager
 	use 'wbthomason/packer.nvim'
+  -- Git integration
+  use 'tpope/vim-fugitive'
+  -- GitHub integration
+  use 'tpope/vim-rhubarb'
   -- Emmet
   use 'mattn/emmet-vim'
   -- Gitsigns
