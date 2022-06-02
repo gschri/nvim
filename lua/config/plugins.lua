@@ -12,6 +12,12 @@ return require('packer').startup(function()
   use 'tpope/vim-fugitive'
   -- GitHub integration
   use 'tpope/vim-rhubarb'
+  -- GLSL
+  use 'tikhomirov/vim-glsl'
+  -- Svelte
+  use 'evanleck/vim-svelte'
+  -- Haskell Ghcid
+  use {'ndmitchell/ghcid', rtp = 'plugins/nvim'}
   -- Emmet
   use 'mattn/emmet-vim'
   -- Gitsigns

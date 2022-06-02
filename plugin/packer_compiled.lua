@@ -105,6 +105,11 @@ _G.packer_plugins = {
     path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\emmet-vim",
     url = "https://github.com/mattn/emmet-vim"
   },
+  ghcid = {
+    loaded = true,
+    path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\ghcid\\plugins/nvim",
+    url = "https://github.com/ndmitchell/ghcid"
+  },
   ["gitsigns.nvim"] = {
     loaded = true,
     path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\gitsigns.nvim",
@@ -225,10 +230,20 @@ _G.packer_plugins = {
     path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-fugitive",
     url = "https://github.com/tpope/vim-fugitive"
   },
+  ["vim-glsl"] = {
+    loaded = true,
+    path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-glsl",
+    url = "https://github.com/tikhomirov/vim-glsl"
+  },
   ["vim-rhubarb"] = {
     loaded = true,
     path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-rhubarb",
     url = "https://github.com/tpope/vim-rhubarb"
+  },
+  ["vim-svelte"] = {
+    loaded = true,
+    path = "C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\vim-svelte",
+    url = "https://github.com/evanleck/vim-svelte"
   },
   ["which-key.nvim"] = {
     loaded = true,
@@ -238,6 +253,10 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Runtimepath customization
+time([[Runtimepath customization]], true)
+vim.o.runtimepath = vim.o.runtimepath .. ",C:\\Users\\gabri\\AppData\\Local\\nvim-data\\site\\pack\\packer\\start\\ghcid\\plugins/nvim"
+time([[Runtimepath customization]], false)
 -- Config for: Comment.nvim
 time([[Config for Comment.nvim]], true)
 try_loadstring("\27LJ\2\n5\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\fComment\frequire\0", "config", "Comment.nvim")
